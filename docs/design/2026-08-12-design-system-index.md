@@ -2,12 +2,16 @@
 
 UI work must follow the guidance in this folder.
 
-## Expected contents
+## Documents
 
-Add dated design documents here using the ISO date prefix (`YYYY-MM-DD-...`), covering at least:
+| Document | Purpose |
+| --- | --- |
+| [2026-08-12-design-system.md](./2026-08-12-design-system.md) | Design system: tokens, color, type, space, motion, and product language |
 
-- Design tokens (color, typography, spacing, radius, elevation, motion)
-- Component inventory and usage rules
-- Layout and interaction patterns
+## Rules for agents
 
-Until specific design docs exist, do not invent a parallel design system. Ask the user before introducing tokens or components.
+- Refer to the design system before any UI work
+- Use documented token names; do not invent parallel values
+- Do not add stylesheets or raw visual values when a token exists
+- Do not create new components without explicit user approval
+- If guidance is missing, ask before inventing a new visual direction
