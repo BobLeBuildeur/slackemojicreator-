@@ -1,0 +1,28 @@
+---
+description: UI work must follow docs/design, use design tokens, and require approval for new components
+alwaysApply: true
+---
+
+# UI and Design System
+
+## Design documentation
+
+- Any UI work must refer to `/docs/design` documentation before implementing.
+- If design guidance is missing for the requested UI, stop and ask the user rather than inventing a new visual system.
+
+## Design tokens
+
+- Use design tokens instead of direct CSS value definitions (raw colors, spacing, font sizes, radii, shadows, etc.).
+- Prefer token references from the design system (CSS variables, theme tokens, or documented token names in `docs/design`).
+- Do not introduce one-off hardcoded visual values when a token exists or should be added via design docs.
+
+Examples:
+
+- Prefer: `color: var(--color-text-primary);` or the project's token API
+- Avoid: `color: #1a1a1a;` unless the design docs explicitly require a one-off and the user approves it
+
+## New components
+
+- Do not create new UI components without explicit user approval.
+- Prefer composing or extending existing components.
+- If a new component seems necessary, propose it (name, responsibility, API sketch) and wait for approval before adding files.
