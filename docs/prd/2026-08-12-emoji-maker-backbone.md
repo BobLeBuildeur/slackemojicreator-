@@ -1,6 +1,6 @@
 # PRD: Emoji Maker Backbone
 
-**Status:** Draft (v5)  
+**Status:** Draft (v6)  
 **Date:** 2026-08-12  
 **Scope:** Product backbone and architecture only. Concrete generator art/copy is out of scope; the generator **file contract** is in scope.
 
@@ -43,10 +43,11 @@ Ship a single-page maker with one form, a JSON registry of generators, per-gener
   5. Render a **64×64 PNG** with transparent background on a **canvas**
   6. Offer **download** named `{character}-{situation}-{thing}` (kebab-case; see F13)
 
-### Transparency guidance (M1+)
+### Thing image drop (M1+)
 
-- After the user drops a thing image, the system **checks for transparency**
-- If the image does **not** appear to have a transparent background, show a **note** recommending a transparent image
+- Accept common image types including **JPEG**, PNG, and other browser-decodable formats used for drop
+- After drop, check whether the image has an **alpha channel**
+- If there is **no alpha channel** (typical for JPEG), show a **note** that the image lacks transparency
 - The note is advisory only — it **must not block** Make emoji or download
 
 ### Architecture (conceptual)
@@ -56,7 +57,7 @@ Ship a single-page maker with one form, a JSON registry of generators, per-gener
 | **Registry (JSON)** | Lists available generators, organized by **character** then **situation** |
 | **Generator definition (JSON)** | Per generator: base image URL(s) and relative thing placement (`x`, `y`, `w`, `h`) |
 | **Form** | Character, situation, thing text, thing image drop zone, **Make emoji** CTA |
-| **Thing image (M1/M2)** | User-provided via drag and drop; transparency check with non-blocking note |
+| **Thing image (M1/M2)** | User-provided via drag and drop (incl. JPEG); alpha-channel check with non-blocking note |
 | **Thing image search (M3)** | Locates a royalty-free transparent image matching the thing text |
 | **Composer** | Maps relative placement onto the base’s pixel size, draws the thing, then outputs 64×64 transparent PNG (M2: masks + top layers) |
 | **Canvas preview** | Shows the composed emoji |
@@ -88,7 +89,7 @@ Exact field names can be finalized in the implementation plan; the responsibilit
 ### Success criteria
 
 - User selects character and situation, names the thing, drops a thing image, clicks **Make emoji**, and gets a 64×64 transparent PNG preview plus download
-- Non-transparent thing images show a note but still compose
+- Non-alpha thing images (including JPEG) show a lack-of-transparency note but still compose
 - New generators are added by updating registry JSON + adding a generator JSON—no form redesign
 - Situation choices always stay valid for the selected character
 
@@ -105,8 +106,8 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 - Form: character, situation, thing text (one line) + thing image **drag and drop** + **Make emoji**
 - Registry JSON → character/situation dropdowns
 - Load generator JSON for the selection (base URL + relative `x/y/w/h`)
-- User provides the thing image via drag and drop
-- Transparency check with advisory note if not transparent (does not block)
+- User provides the thing image via drag and drop (JPEG allowed)
+- Alpha-channel check; note if missing (does not block)—JPEG always notifies
 - Compose thing into the resolved pixel placement on base; output **64×64 transparent PNG**
 - Canvas preview + download as `{character}-{situation}-{thing}.png`
 - Sample registry + one sample generator definition to prove the pipeline
@@ -116,8 +117,8 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 - [ ] Character list comes from registry JSON
 - [ ] Situation list filters by selected character
 - [ ] Changing character updates situations to a valid set
-- [ ] User can drag and drop a thing image
-- [ ] Non-transparent thing image shows a note and still allows Make emoji
+- [ ] User can drag and drop a thing image, including JPEG
+- [ ] Image without an alpha channel shows a lack-of-transparency note and still allows Make emoji
 - [ ] **Make emoji** requires character, situation, thing text, and thing image
 - [ ] **Make emoji** is required; no compose on field change alone
 - [ ] Successful make shows 64×64 transparent PNG on canvas
@@ -174,8 +175,8 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 | F3 | Situation options are derived from the registry JSON and limited to the selected character. |
 | F4 | Changing character refreshes situation options; an invalid prior situation is cleared or replaced with a valid default. |
 | F5 | Thing is free text entered by the user. Product language uses **Thing** (not Target). |
-| F6 | **M1/M2:** The user provides the thing image via drag and drop. |
-| F7 | After a thing image is provided, the system checks for transparency. If it is not transparent, show an advisory note; do **not** block Make emoji or download. |
+| F6 | **M1/M2:** The user provides the thing image via drag and drop. **JPEG is allowed**, along with other common image types (e.g. PNG). |
+| F7 | After a thing image is provided, check for an **alpha channel**. If none is present, show a note that the image lacks transparency; do **not** block Make emoji or download. |
 | F8 | Composition runs only when the user activates **Make emoji**, and only if character, situation, thing text, and thing image are present. |
 | F9 | The selected character + situation resolves to one generator definition via the registry. |
 | F10 | Each generator is defined by a JSON file that includes a base image URL and relative thing placement `x`, `y`, `w`, `h` (see F11). |
@@ -197,7 +198,7 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 | N2 | After **Make emoji**, preview should feel interactive for a single emoji (exact latency budget still TBD). |
 | N3 | Final asset is always 64×64 PNG with transparency. |
 | N4 | Failures (missing generator, bad asset URL, missing thing image, compose error) show plain, actionable feedback—no silent blank canvas. |
-| N5 | Transparency warning copy is plain and helpful; it must not read as a hard error. |
+| N5 | Lack-of-transparency note is plain and helpful; it must not read as a hard error. |
 | N6 | **M3:** Searched thing images must meet a royalty-free license bar defined before M3 build. |
 
 ### Decisions locked
@@ -206,8 +207,8 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 | --- | --- |
 | Naming | **Thing** |
 | Compose trigger | **Make emoji** button |
-| Thing image (M1/M2) | User provides via **drag and drop** |
-| Transparency | Check and **note** if not transparent; **do not block** generation |
+| Thing image (M1/M2) | User provides via **drag and drop**; **JPEG allowed** |
+| Transparency | Check for **alpha channel** only; if missing, **note** lack of transparency; **do not block** |
 | Thing image search | **M3** (not M1) |
 | Generator definition | JSON with base URL + relative `x/y/w/h` placement |
 | Placement | `x`,`y` ∈ [0,1] from top-left; `w`,`h` ∈ [0,1] of base **width**; supports any base size |
@@ -219,10 +220,7 @@ End-to-end path with user-provided thing image and placement-rect composition (n
 
 | Topic | Why it matters |
 | --- | --- |
-| Transparency detection rule | Exact heuristic (alpha channel present vs some transparent pixels) |
-| Accepted drop file types | e.g. PNG/WebP only vs also JPEG |
 | Latency budget | Softens N2 |
-| Vision doc still says Target | Product language consistency |
 | M3 search provider / license | Needed before M3 implementation, not before M1 |
 
 ---
