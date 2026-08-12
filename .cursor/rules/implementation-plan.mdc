@@ -1,0 +1,38 @@
+---
+description: Before coding, write a detailed implementation plan from the feature PRD
+alwaysApply: true
+---
+
+# Implementation Plans
+
+Before developing code for a feature, refer to the feature PRD and write a detailed implementation plan.
+
+## Prerequisites
+
+- Locate and read the relevant PRD in `docs/prd/`
+- If no PRD exists, create one first (see feature-prd rule)
+- Do not start implementation until the plan is written
+
+## Location and naming
+
+Save plans under `docs/plans/` with an ISO date prefix:
+
+Example: `docs/plans/2026-08-12-emoji-upload-flow.md`
+
+Link the plan to its PRD (path or title).
+
+## Required plan contents
+
+Every implementation plan must include:
+
+1. **Architecture** — Components, data flow, APIs, and key decisions
+2. **Files touched** — Existing files to modify and new files to add (paths)
+3. **Manifest of changes** — Concrete change list per file or area (what will change and why)
+4. **Guardrails** — Out of scope, risks, constraints, testing expectations, and things not to break
+
+## Workflow
+
+1. Read the PRD
+2. Write the implementation plan under `docs/plans/`
+3. Confirm the plan with the user when scope is ambiguous or invasive
+4. Implement only what the plan covers; update the plan if scope changes mid-work

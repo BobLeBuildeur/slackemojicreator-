@@ -1,0 +1,18 @@
+---
+description: Documentation location and naming conventions for all project docs
+alwaysApply: true
+---
+
+# Documentation
+
+- All project documentation lives in the `docs/` folder (and its subfolders).
+- Do not create documentation outside `docs/` unless the user explicitly requests it.
+- Every document filename must be prefixed with the date in ISO format: `YYYY-MM-DD`.
+  - Correct: `docs/2026-08-12-auth-overview.md`
+  - Incorrect: `docs/auth-overview.md`
+- Prefer clear, kebab-case titles after the date prefix.
+- When updating an existing dated document, edit that file in place. Create a new dated file only when starting a distinct document or a new revision the user asked to keep separately.
+- Organize by purpose when helpful, still under `docs/`:
+  - `docs/prd/` — product requirement documents
+  - `docs/plans/` — implementation plans
+  - `docs/design/` — design system and UI guidance

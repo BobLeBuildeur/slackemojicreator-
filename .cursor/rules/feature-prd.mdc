@@ -1,0 +1,38 @@
+---
+description: New features must be planned with PRDs before implementation
+alwaysApply: true
+---
+
+# Feature PRDs
+
+Before building any new feature, create or update a Product Requirements Document (PRD) in `docs/prd/`.
+
+## When this applies
+
+- New user-facing features
+- Meaningful behavior changes
+- New integrations or workflows
+
+Do not skip the PRD for "small" features unless the user explicitly waives it.
+
+## Naming
+
+Follow the documentation rule: ISO date prefix + kebab-case title.
+
+Example: `docs/prd/2026-08-12-emoji-upload-flow.md`
+
+## Required sections
+
+Every PRD must include:
+
+1. **Problem** — Who is affected, what fails today, and why it matters
+2. **Solution** — Proposed approach and success criteria
+3. **Milestones** — Ordered delivery steps with clear exit criteria
+4. **Requirements** — Functional and non-functional requirements (acceptance-ready)
+
+## Workflow
+
+1. Draft the PRD under `docs/prd/`
+2. Align with the user on problem, solution, milestones, and requirements
+3. Only then proceed to the implementation plan (see implementation-plan rule)
+4. Do not write feature code until the PRD exists and has been referenced
