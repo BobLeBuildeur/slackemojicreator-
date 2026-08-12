@@ -1,6 +1,6 @@
 # PRD: Emoji Maker Backbone
 
-**Status:** Draft (v2)  
+**Status:** Draft (v3)  
 **Date:** 2026-08-12  
 **Scope:** Product backbone and architecture only. Concrete generator art/copy is out of scope; the generator **file contract** is in scope.
 
@@ -38,7 +38,7 @@ Ship a single-page maker with one form, a JSON registry of generators, per-gener
   3. Find a **royalty-free, transparent-background** image for the thing
   4. Place the thing into the base using the generator’s **x, y, width, height** placement
   5. Render a **64×64 PNG** with transparent background on a **canvas**
-  6. Offer **download** with a Slack-compatible filename (descriptive, short, kebab-case)
+  6. Offer **download** named `{character}-{situation}-{thing}` (kebab-case; see F13)
 
 ### Architecture (conceptual)
 
@@ -50,7 +50,7 @@ Ship a single-page maker with one form, a JSON registry of generators, per-gener
 | **Thing image source** | Locates a royalty-free transparent image matching the thing |
 | **Composer** | Draws thing into the placement rect on the base; outputs 64×64 transparent PNG (M2: masks + top layers) |
 | **Canvas preview** | Shows the composed emoji |
-| **Download** | Exports the canvas PNG with a Slack-compatible name |
+| **Download** | Exports the canvas PNG as `{character}-{situation}-{thing}.png` |
 
 Individual generator content (which characters, art, copy) is defined outside this PRD. This PRD owns the **contracts** those generators must follow.
 
@@ -102,7 +102,7 @@ End-to-end path with placement-rect composition (no masks/top layers).
 - [ ] **Make emoji** is required; no compose on field change alone
 - [ ] Incomplete form (missing character, situation, or thing) does not compose; button stays disabled or errors clearly
 - [ ] Successful make shows 64×64 transparent PNG on canvas
-- [ ] Download is PNG; filename is short, descriptive, kebab-case, Slack-usable
+- [ ] Download is PNG named `{character}-{situation}-{thing}` in kebab-case (e.g. `bufo-offers-you-ice-cream.png`)
 - [ ] Sample registry + generator JSON works end to end
 
 ### M2 — Layered composition
@@ -147,7 +147,7 @@ End-to-end path with placement-rect composition (no masks/top layers).
 | F10 | The composer places the thing image into the generator’s placement rectangle on the base. |
 | F11 | Output is a **PNG** with **transparent background** at **64×64** pixels, rendered to a canvas for preview. |
 | F12 | The user can download the previewed PNG. |
-| F13 | Download filenames are descriptive, short, kebab-cased, and Slack-compatible. |
+| F13 | Download filename is `{character}-{situation}-{thing}` in kebab-case, plus `.png`. Multi-word parts are hyphenated. Example: character `bufo`, situation `offers you`, thing `ice cream` → `bufo-offers-you-ice-cream.png`. |
 | F14 | The registry is a JSON file listing available generators, structured by character then situation. |
 | F15 | Concrete generator content is out of scope; sample registry/generator JSON is allowed to prove M1. |
 | F16 | **M2:** Generator JSON may include a mask image URL used to cut/fit the thing. |
@@ -172,6 +172,7 @@ End-to-end path with placement-rect composition (no masks/top layers).
 | Generator definition | JSON with base URL + `x/y/w/h` placement |
 | Registry | JSON listing generators by character → situation |
 | Output | 64×64 PNG, transparent background |
+| Filename | `{character}-{situation}-{thing}` kebab-case + `.png` (e.g. `bufo-offers-you-ice-cream.png`) |
 
 ### Still open
 
@@ -179,9 +180,9 @@ End-to-end path with placement-rect composition (no masks/top layers).
 | --- | --- |
 | Thing image provider / API | Blocks F9 implementation |
 | No-image / error behavior details | Blocks N5 acceptance tests |
-| Filename pattern | Blocks F13 acceptance tests |
 | Placement coordinate space | Base native pixels vs already-64 space |
 | Latency budget | Softens N2 |
+| Vision doc still says Target | Product language consistency |
 
 ---
 
